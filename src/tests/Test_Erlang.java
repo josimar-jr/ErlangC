@@ -1,28 +1,50 @@
 package tests;
 
+//import org.junit.AfterClass;
+//import org.junit.Before;
 import static org.junit.Assert.*;
 import org.junit.Test;
+import wfmpack.Erlang;
 
 public class Test_Erlang {
-
+	
 	@Test
 	public void testErlang() {
-		fail("Not yet implemented");
+		Erlang erlang = new Erlang();
 	}
 
 	@Test
 	public void testErlangIntDoubleIntDoubleDouble() {
-		fail("Not yet implemented");
+		int intervaloEmSegundos = 1800;
+		double SLAMeta = 0.90;
+		int tempoEsperaAceitavel = 10;
+		double chamadas = 667;
+		double TMA = 150;
+
+		Erlang erlang = new Erlang( intervaloEmSegundos, SLAMeta, tempoEsperaAceitavel, chamadas, TMA );
 	}
 
 	@Test
 	public void testErlangIntIntIntDoubleDouble() {
-		fail("Not yet implemented");
+		int intervaloEmSegundos = 900;
+		int tempoEsperaAceitavel = 10;
+		double chamadas = 180;
+		double TMA = 450;
+		int numAgentes = 59;
+
+		Erlang erlang = new Erlang(intervaloEmSegundos, numAgentes, tempoEsperaAceitavel, chamadas, TMA);
 	}
 
 	@Test
 	public void testExibir() {
-		fail("Not yet implemented");
+		int intervaloEmSegundos = 1800;
+		double SLAMeta = 0.90;
+		int tempoEsperaAceitavel = 10;
+		double chamadas = 667;
+		double TMA = 150;
+
+		Erlang erlang = new Erlang( intervaloEmSegundos, SLAMeta, tempoEsperaAceitavel, chamadas, TMA );
+		erlang.exibir();
 	}
 
 	@Test
@@ -47,17 +69,27 @@ public class Test_Erlang {
 
 	@Test
 	public void testSetMinutoIntervalo() {
-		fail("Not yet implemented");
+		int minutos = 15;
+		int segundos = minutos * 60;
+		Erlang erlang = new Erlang();
+		erlang.setMinutoIntervalo(minutos);
+		assertEquals( erlang.getSegundosIntervalo(), segundos);
 	}
 
 	@Test
 	public void testSetSegundosIntervalo() {
-		fail("Not yet implemented");
+		int segundos = 900;
+		Erlang erlang = new Erlang();
+		erlang.setSegundosIntervalo(segundos);
+		assertEquals( erlang.getSegundosIntervalo(), segundos);
 	}
 
 	@Test
 	public void testGetSegundosIntervalo() {
-		fail("Not yet implemented");
+		int segundos = 900;
+		Erlang erlang = new Erlang();
+		erlang.setSegundosIntervalo(segundos);
+		assertEquals( erlang.getSegundosIntervalo(), segundos);
 	}
 
 	@Test

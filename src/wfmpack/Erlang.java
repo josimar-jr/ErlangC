@@ -16,7 +16,6 @@ public class Erlang {
 	 * @return objeto do tipo Erlang para uso dos métodos agent e SLA
 	 */
 	public Erlang() {
-		
 	}
 	
 	/** construtor específico para iniciar calculando a quantidade de recursos necessários
