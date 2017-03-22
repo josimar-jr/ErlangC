@@ -49,12 +49,33 @@ public class Test_Erlang {
 
 	@Test
 	public void testAgent() {
-		fail("Not yet implemented");
+		Erlang erlc30m = new Erlang();
+		double chamadas = 180;
+		double TMA = 450;
+		double NS = 0.90;
+		int tempoAceitavel = 10;
+		
+		// adiciona o período com 1/2 hora
+		erlc30m.setMinutoIntervalo(30); 
+		erlc30m.agent(NS, tempoAceitavel, chamadas, TMA);
+		assertEquals(55, erlc30m.getAgenteEstimado());
 	}
 
 	@Test
 	public void testSLA() {
-		fail("Not yet implemented");
+		Erlang erlc30m = new Erlang();
+		double chamadas = 180;
+		double TMA = 450;
+		int numAgentes = 48;
+		int tempoAceitavel = 10;
+		
+		double nsAlvo = 0.47538605041284376;
+		double tolerancia = 0.000001;
+		
+		// adiciona o período com 1/2 hora
+		erlc30m.setMinutoIntervalo(30);
+		erlc30m.SLA(numAgentes, tempoAceitavel, chamadas, TMA);
+		assertEquals(nsAlvo, erlc30m.getNivelServicoEstimado(), tolerancia);
 	}
 
 	@Test
@@ -94,12 +115,14 @@ public class Test_Erlang {
 
 	@Test
 	public void testGetAgenteEstimado() {
-		fail("Not yet implemented");
+		Erlang erlang = new Erlang();
+		erlang.getAgenteEstimado();
 	}
 
 	@Test
 	public void testGetNivelServicoEstimado() {
-		fail("Not yet implemented");
+		Erlang erlang = new Erlang();
+		erlang.getNivelServicoEstimado();
 	}
 
 }
