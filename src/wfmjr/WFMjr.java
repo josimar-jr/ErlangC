@@ -9,6 +9,8 @@ import wfmpack.tipoCurva;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
@@ -18,6 +20,13 @@ public class WFMjr {
 		
 		String cpathfile;
 		FileCurvas fc;
+		String path = WFMjr.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+		String decodedPath = "";
+		try {
+			decodedPath = URLDecoder.decode(path, "UTF-8");
+		} catch (UnsupportedEncodingException e1) {
+			e1.printStackTrace();
+		}
 		
 		System.out.println("Opções das classes para teste");
 		System.out.println("1 - Classe Erlang");
@@ -190,8 +199,7 @@ public class WFMjr {
 			    	System.out.println("Opção não identificada!");
 		    }
 		}
-		catch(IOException e)
-		{
+		catch(IOException e) {
 			e.printStackTrace();
 		}
 	}
