@@ -61,7 +61,8 @@ public class WFMjr {
 		
 					System.out.println( "Valores para 1 hora" );
 					erlc1h.exibir();
-		
+					System.out.println("ASA: " + erlc1h.ASA( 34, 180, 450 ));
+					
 					chamadas = 180;
 					TMA = 450;
 					numAgentes = 48;

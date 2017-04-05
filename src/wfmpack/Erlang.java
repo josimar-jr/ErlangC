@@ -197,7 +197,7 @@ public class Erlang {
 	 * @param AHT - tempo de espera aceitável
 	 * @return aveAnswer int - tempo de espera calculado
 	 */
-	public double ASA(int agents, double callsPerHour, int AHT){
+	public double ASA(int agents, double calls, int AHT){
 		double birthRate = 0;
 		double deathRate = 0;
 		double trafficRate = 0;
@@ -207,7 +207,7 @@ public class Erlang {
 		double C = 0;
 		double server = 0;
 		
-		birthRate = callsPerHour;
+		birthRate = calls;
 		deathRate = segundosIntervalo / AHT;
 		
 		// calcula a intensidade de tráfego
@@ -348,6 +348,7 @@ public class Erlang {
 	 * @return secs double - quantidade de segundos  
 	 */
 	private double secs( double amount ){
-		return ( (int)( (amount * 3600) + 0.5 ) );
+		return ( (amount * 3600) );
+		// return ( (int)( (amount * 3600) + 0.5 ) );
 	}
 }

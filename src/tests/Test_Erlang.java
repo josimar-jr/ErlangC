@@ -80,7 +80,29 @@ public class Test_Erlang {
 
 	@Test
 	public void testNLines() {
-		fail("Not yet implemented");
+		Erlang erlang = new Erlang();
+		double chamadas = 180;
+		double TMA = 450;
+		int segundos = 0;
+		double blocking = 0.01;
+		
+		// valores alvo
+		int trunks1h = 33;
+		int trunks30m = 58;
+		int trunks15m = 107;
+		int trunks10m = 154;
+		
+		segundos = 3600;
+		assertEquals(trunks1h, erlang.nLines((chamadas * TMA / segundos), blocking ), 0.0);
+		
+		segundos = 1800;
+		assertEquals(trunks30m, erlang.nLines((chamadas * TMA / segundos), blocking ), 0.0);
+		
+		segundos = 900;
+		assertEquals(trunks15m, erlang.nLines((chamadas * TMA / segundos), blocking ), 0.0);
+		
+		segundos = 600;
+		assertEquals(trunks10m, erlang.nLines((chamadas * TMA / segundos), blocking ), 0.0);
 	}
 
 	@Test
