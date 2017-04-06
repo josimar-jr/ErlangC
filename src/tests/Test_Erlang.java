@@ -107,7 +107,37 @@ public class Test_Erlang {
 
 	@Test
 	public void testASA() {
-		fail("Not yet implemented");
+		Erlang erlang = new Erlang();
+		double chamadas = 180;
+		double TMA = 450;
+		int segundos = 0;
+		int agents = 0;
+		
+		// valores alvo
+		double asa1h = 0.600;
+		double asa30m = 84.100;
+		double asa15m = 9.800;
+		double asa10m = 51.100;
+		
+		agents = 34;
+		segundos = 3600;
+		erlang.setSegundosIntervalo( segundos );
+		assertEquals(asa1h, erlang.ASA(agents, chamadas, TMA), 0.05);
+		
+		agents = 48;
+		segundos = 1800;
+		erlang.setSegundosIntervalo( segundos );
+		assertEquals(asa30m, erlang.ASA(agents, chamadas, TMA), 0.05);
+		
+		agents = 100;
+		segundos = 900;
+		erlang.setSegundosIntervalo( segundos );
+		assertEquals(asa15m, erlang.ASA(agents, chamadas, TMA), 0.05);
+		
+		agents = 140;
+		segundos = 600;
+		erlang.setSegundosIntervalo( segundos );
+		assertEquals(asa10m, erlang.ASA(agents, chamadas, TMA), 0.05);
 	}
 
 	@Test
