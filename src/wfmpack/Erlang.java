@@ -194,10 +194,10 @@ public class Erlang {
 	/** ASA - calcula o tempo estimado de espera para o atendimento 
 	 * @param agents int - quantidade de agentes para o intervalo
 	 * @param callsPerHour double - quantidade de chamadas para o intervalo
-	 * @param AHT - tempo de espera aceitável
+	 * @param AHT - tempo médio de atendimento planejado para o intervalo
 	 * @return aveAnswer int - tempo de espera calculado
 	 */
-	public double ASA(int agents, double calls, int AHT){
+	public double ASA(int agents, double calls, double AHT){
 		double birthRate = 0;
 		double deathRate = 0;
 		double trafficRate = 0;
@@ -348,7 +348,7 @@ public class Erlang {
 	 * @return secs double - quantidade de segundos  
 	 */
 	private double secs( double amount ){
-		return ( (amount * 3600) );
-		// return ( (int)( (amount * 3600) + 0.5 ) );
+		return ( (amount * segundosIntervalo ) );
+		// return ( (int)( (amount * 3600) + 0.5 ) ); // linha original no erlangC
 	}
 }
