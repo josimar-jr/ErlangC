@@ -54,7 +54,7 @@ public class Curvas {
 	 * @return	lok boolean, determina se a adição aconteceu com sucesso (true) ou não (false)
 	 */
 	public boolean adicionarInformacao( double volume, double tma ){
-		GregorianCalendar horario = new GregorianCalendar(2015, 1, 1, 0, 0); 
+		GregorianCalendar horario = new GregorianCalendar(1901, 1, 1, 0, 0); 
 		boolean lOk = this.adicionarInformacao(horario, volume, tma);
 		return lOk;
 	}
