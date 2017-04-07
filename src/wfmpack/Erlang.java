@@ -1,15 +1,25 @@
 package wfmpack;
 
+import java.util.ArrayList;
+
 public class Erlang {
 	
 	public static final double maxAccuracy = 0.00001;
 	
 	// declaração dos atributos
-	private int minutosIntervalo;
-	private int segundosIntervalo;
-	
-	private int agenteEstimado;
-	private double nivelServicoEstimado;
+	private int intervalInMinutes;
+	private int intervalInSeconds;
+	private int necessaryAgents;
+	private int insertedAgentes;
+	private double targetSLA;
+	private double calcSLA;
+	private double acceptableWaitingTime;
+	private double calls;
+	private double averageAnswerTime;
+	private double nLines;
+	private double productivity;
+	private boolean hasError;
+	private ArrayList<String> errors = new ArrayList<>();
 
 	//declaração dos contrutores
 	/** Construtor básico para inicialização posterior dos valores 
@@ -52,43 +62,48 @@ public class Erlang {
 	 * exibe o número de recursos e o nível de serviço
 	 */
 	public void exibir(){
-		System.out.println( "Recurso = " + agenteEstimado );
-		System.out.println( "Nivel de Servico = " + nivelServicoEstimado );
+		System.out.println( "Recurso = " + necessaryAgents );
+		System.out.println( "Nivel de Servico = " + calcSLA );
 	};
-	
-	/** Calcula o número de recursos considerando as informações de nível de serviço e chamadas para o intervalo
-	 * @param SLA	double	- indica qual o nível de serviço deverá ser utilizado como meta no cálculo de recursos
-	 * @param serviceTime	int 	- define qual o tempo de resposta para contar uma chamada no nível de serviço (até quando pode ser respondida)
-	 * @param callsPerHour	double	- quantidade de chamadas esperadas/planejadas para o intervalo
-	 * @param AHT	double	- tempo médio de atendimento planejado para o intervalo
-	 * @return agent	int	- número de recursos calculados
+
+	/** Calcula o número de recursos considerando as informações no objeto
+	 * @return boolean: determina se conseguiu realizar a operação ou não
 	 */
-	// utiliza o nível de serviço planejado (SLA), o tempo aceitável de espera (serviceTime), 
-	public int agent( double SLA, int serviceTime, double callsPerHour, double AHT ){	
+	public boolean agent(){
 		double birthRate, deathRate, trafficRate;
 		double erlangs, utilisation, C, SLQueued;
 		int maxIterate, count;
 		int noAgents = 0;
 		double server;
 
-		if (segundosIntervalo > 0) {
-			if (SLA > 1)
-				SLA = 1;
-	
-			birthRate = callsPerHour;
-			deathRate = segundosIntervalo / AHT;
+		if ( ( this.intervalInSeconds > 0 ) &&
+				( this.targetSLA > 0 ) && 
+				( this.acceptableWaitingTime > 0 ) && 
+				( this.calls > 0 ) &&
+				( this.averageAnswerTime > 0 ) ) {
+
+			this.hasError = false;
+
+			if (this.targetSLA > 1){
+				this.targetSLA = 1;
+			}
+			
+			birthRate = this.calls;
+			deathRate = this.intervalInSeconds / this.averageAnswerTime;
 	
 			// calcula a intensidade de tráfego
 			trafficRate = birthRate / deathRate;
 	
 			// calcula o numero de Erlangs/horas
-			erlangs = ( (int)(birthRate * (AHT)) ) / segundosIntervalo + 0.5;
+			erlangs = ( (int)(birthRate * (this.averageAnswerTime)) ) / this.intervalInSeconds + 0.5;
 	
 			// inicia o número de agentes para 100% de uso
-			if (erlangs < 1)
+			if (erlangs < 1){
 				noAgents = 1;
-			else
+			}
+			else {
 				noAgents = ( (int)(erlangs) );
+			}
 			utilisation = trafficRate / noAgents;
 			// agora busca o número real e o número abaixo de 100% de uso
 			while (utilisation > 1){
@@ -105,25 +120,97 @@ public class Erlang {
 					C = erlangC(server, trafficRate);
 	
 					// encontra o nível do SLA com o número de agentes informado
-					SLQueued = 1 - C * ( Math.pow( Math.E, ((trafficRate - server) * serviceTime / AHT) ) ); // usa a constante de Euller
+					SLQueued = 1 - C * ( Math.pow( Math.E, ((trafficRate - server) * this.acceptableWaitingTime / this.averageAnswerTime) ) ); // usa a constante de Euller
 	
-					if (SLQueued < 0)
+					if (SLQueued < 0){
 						SLQueued = 0;
-	
-					if (SLQueued >= SLA)
+					}
+					if (SLQueued >= this.targetSLA) {
 						count = maxIterate;
-	
+					}
 					// insere um limite na precisão do SL (nunca irá atingir 100%)
-					if (SLQueued > (1 - maxAccuracy))
+					if (SLQueued > (1 - maxAccuracy)) {
 						count = maxIterate;
+					}
 				}
-				if (count != maxIterate)
+				if (count != maxIterate) {
 					noAgents += 1;
+				}
 			}
 		}
-		agenteEstimado = noAgents;
-		return noAgents;
+		else {
+			// caso os parâmetros não estejam preenchidos
+			this.hasError = true;
+			noAgents  = -1;
+			this.errors.add("Informe todos os parâmetros para a execução do método.");
+		}
+		this.necessaryAgents = noAgents;
+		return this.hasError;
 	}
+	
+	/** Calcula o número de recursos considerando as informações de nível de serviço e chamadas para o intervalo
+	 * @param SLA	double	- indica qual o nível de serviço deverá ser utilizado como meta no cálculo de recursos
+	 * @param serviceTime	int 	- define qual o tempo de resposta para contar uma chamada no nível de serviço (até quando pode ser respondida)
+	 * @param callsPerHour	double	- quantidade de chamadas esperadas/planejadas para o intervalo
+	 * @param AHT	double	- tempo médio de atendimento planejado para o intervalo
+	 * @return agent	int	- número de recursos calculados
+	 */
+	// utiliza o nível de serviço planejado (SLA), o tempo aceitável de espera (serviceTime), 
+	public int agent( double SLA, int serviceTime, double callsPerHour, double AHT ){
+		int numberOfAgents = 0;
+		this.targetSLA = SLA;
+		this.acceptableWaitingTime = serviceTime;
+		this.calls = callsPerHour;
+		this.averageAnswerTime = AHT;
+		
+		if ( this.agent() ){
+			numberOfAgents = this.necessaryAgents;
+		}
+		return numberOfAgents;
+	}
+	
+	/** SLA: Calcula o nível de serviço baseado nas informações no objeto
+	 * @return boolean - determina se conseguiu calcular 
+	 */
+	//public double SLA( int agents, int serviceTime, double callsPerHour, double AHT ) { 
+	public boolean SLA() {
+		double birthRate, deathRate, trafficRate, server;
+		double utilisation, C, SLQueued;
+
+		if (( this.insertedAgentes > 0 ) && 
+				( this.acceptableWaitingTime > 0 ) && 
+				( this.calls > 0 ) && 
+				( this.averageAnswerTime > 0) &&
+				( this.intervalInSeconds > 0 ) ){
+
+			this.hasError = false;
+			
+			birthRate = this.calls;
+			deathRate = this.intervalInSeconds / this.averageAnswerTime;
+	
+			// calcula a intensidade de tráfego
+			trafficRate = birthRate / deathRate;
+			utilisation = trafficRate / this.insertedAgentes;
+	
+			if (utilisation >= 1)
+				utilisation = 0.99;
+	
+			server = this.insertedAgentes;
+			C = erlangC(server, trafficRate);
+	
+			// Calcula o nível de serviço considerando a fila e chamadas não enfileiradas
+			// revisada a fórmula com agradecimento a Tim Bolte e Jorn Lodahl pela ajuda/inserção
+			SLQueued = 1 - C * Math.pow( Math.E, (trafficRate-server)*this.acceptableWaitingTime / this.averageAnswerTime );
+	
+			this.calcSLA = minMax(SLQueued, 0, 1); // garante que o resultado esteja dentro dos limites
+		}
+		else {
+			this.hasError = true;
+		}
+			
+		return this.hasError;
+	}
+	
 	/** SLA: Calcula o nível de serviço baseado nos parâmetros recebidos
 	 * 
 	 * @param agents	int	- número de recursos base para cálculo do nível de serviço
@@ -135,28 +222,55 @@ public class Erlang {
 	public double SLA( int agents, int serviceTime, double callsPerHour, double AHT ) { 
 		double SLA = 0.0;
 
-		double birthRate, deathRate, trafficRate, server;
-		double utilisation, C, SLQueued;
-
-		birthRate = callsPerHour;
-		deathRate = segundosIntervalo / AHT;
-
-		// calcula a intensidade de tráfego
-		trafficRate = birthRate / deathRate;
-		utilisation = trafficRate / agents;
-
-		if (utilisation >= 1)
-			utilisation = 0.99;
-
-		server = agents;
-		C = erlangC(server, trafficRate);
-
-		// Calcula o nível de serviço considerando a fila e chamadas não enfileiradas
-		// revisada a fórmula com agradecimento a Tim Bolte e Jorn Lodahl pela ajuda/inserção
-		SLQueued = 1 - C * Math.pow( Math.E, (trafficRate-server)*serviceTime / AHT );
-
-		nivelServicoEstimado = SLA = minMax(SLQueued, 0, 1); // garante que o resultado esteja dentro dos limites
+		this.insertedAgentes = agents;
+		this.acceptableWaitingTime = serviceTime;
+		this.calls = callsPerHour;
+		this.averageAnswerTime = AHT;
+		
+		if ( this.SLA() ){
+			SLA = this.calcSLA;
+		}
+		else {
+			SLA = -1;
+		}
+		
 		return SLA;
+	}
+	/**  nLines - calcula o número de linha/troncos necessários considerando o % de bloqueio
+	 * @param blocking double - % de chamadas que serão bloqueadas
+	 * @return boolean determina se conseguiu calcular
+	 */
+	public boolean nLines( double blocking ){
+		double B = 0;
+		double count = 0;
+		double sngCount = 0;
+		int maxIterate = 0;
+		double intensity = ( this.calls * this.averageAnswerTime / this.intervalInSeconds );
+		
+		if ( intensity >= 0 && blocking >= 0 ) {
+			this.hasError = false;
+			maxIterate = 65535;
+			
+			for ( count = intCeiling( intensity ); count <= maxIterate; count++ ){
+				sngCount = count;
+				B = erlangB(sngCount, intensity);
+				
+				if ( B <= blocking)
+					break;
+			}
+			
+			if (count == maxIterate)
+				count = 0;
+
+			// retorna a quantidade identificada
+			this.nLines = count;
+		}
+		else {
+			this.hasError = true;
+			this.nLines = -1;
+		}
+		
+		return this.hasError;
 	}
 	/**  nLines - calcula o número de linha/troncos necessários considerando 
 	 *  o % de bloqueio e a intensidade (chamadas x tma)
@@ -208,7 +322,7 @@ public class Erlang {
 		double server = 0;
 		
 		birthRate = calls;
-		deathRate = segundosIntervalo / AHT;
+		deathRate = intervalInSeconds / AHT;
 		
 		// calcula a intensidade de tráfego
 		trafficRate = birthRate / deathRate;
@@ -230,8 +344,8 @@ public class Erlang {
 	 * @param minutos	int	- quantidade em minutos de duração do intervalo
 	 */
 	public void setMinutoIntervalo( int minutos ){
-		minutosIntervalo = minutos;
-		segundosIntervalo = minutos * 60 ;
+		intervalInMinutes = minutos;
+		intervalInSeconds = minutos * 60 ;
 		return ;
 	}
 	/** setSegundosIntervalo: define o valor em segundos do intervalo para calcular os recursos e nível de serviço
@@ -240,8 +354,8 @@ public class Erlang {
 	 * @param minutos	int	- quantidade em segundos de duração do intervalo
 	 */
 	public void setSegundosIntervalo( int segundos ){
-		segundosIntervalo = segundos;
-		minutosIntervalo = segundos / 60;
+		intervalInSeconds = segundos;
+		intervalInMinutes = segundos / 60;
 		return;
 	}
 	/** getSegundosIntervalo identifica a quantidade de segundos definida para os cálculos
@@ -249,20 +363,20 @@ public class Erlang {
 	 * @return segundosIntervalo	int - retorna o valor definido
 	 */
 	public int getSegundosIntervalo(){
-		return segundosIntervalo;
+		return intervalInSeconds;
 	}
 
 	/** Retorna o número de recursos
 	 * @return agenteEstimado	int - valor calculado de agentes usando o método 'agent' 
 	 */
 	public int getAgenteEstimado() {
-		return agenteEstimado;
+		return necessaryAgents;
 	}
 	/** Retorna o nível de serviço
 	 * @return the nivelServicoEstimado	double	- valor calculado usando o método 'SLA'
 	 */
 	public double getNivelServicoEstimado() {
-		return nivelServicoEstimado;
+		return calcSLA;
 	}
 	
 	// início declaração dos métodos private
@@ -348,7 +462,7 @@ public class Erlang {
 	 * @return secs double - quantidade de segundos  
 	 */
 	private double secs( double amount ){
-		return ( (amount * segundosIntervalo ) );
+		return ( (amount * intervalInSeconds ) );
 		// return ( (int)( (amount * 3600) + 0.5 ) ); // linha original no erlangC
 	}
 }
