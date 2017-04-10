@@ -10,13 +10,15 @@ public class Erlang {
 	private int intervalInMinutes;
 	private int intervalInSeconds;
 	private int necessaryAgents;
-	private int insertedAgentes;
+	private int insertedAgents;
 	private double targetSLA;
 	private double calcSLA;
 	private double acceptableWaitingTime;
 	private double calls;
 	private double averageAnswerTime;
 	private double nLines;
+	private double intensity;
+	private double calcWaitingTime;
 	private double productivity;
 	private boolean hasError;
 	private ArrayList<String> errors = new ArrayList<>();
@@ -163,7 +165,7 @@ public class Erlang {
 		this.calls = callsPerHour;
 		this.averageAnswerTime = AHT;
 		
-		if ( this.agent() ){
+		if ( !this.agent() ){
 			numberOfAgents = this.necessaryAgents;
 		}
 		return numberOfAgents;
@@ -177,7 +179,7 @@ public class Erlang {
 		double birthRate, deathRate, trafficRate, server;
 		double utilisation, C, SLQueued;
 
-		if (( this.insertedAgentes > 0 ) && 
+		if (( this.insertedAgents > 0 ) && 
 				( this.acceptableWaitingTime > 0 ) && 
 				( this.calls > 0 ) && 
 				( this.averageAnswerTime > 0) &&
@@ -190,12 +192,12 @@ public class Erlang {
 	
 			// calcula a intensidade de tráfego
 			trafficRate = birthRate / deathRate;
-			utilisation = trafficRate / this.insertedAgentes;
+			utilisation = trafficRate / this.insertedAgents;
 	
 			if (utilisation >= 1)
 				utilisation = 0.99;
 	
-			server = this.insertedAgentes;
+			server = this.insertedAgents;
 			C = erlangC(server, trafficRate);
 	
 			// Calcula o nível de serviço considerando a fila e chamadas não enfileiradas
@@ -206,6 +208,7 @@ public class Erlang {
 		}
 		else {
 			this.hasError = true;
+			this.calcSLA = 0;
 		}
 			
 		return this.hasError;
@@ -222,12 +225,12 @@ public class Erlang {
 	public double SLA( int agents, int serviceTime, double callsPerHour, double AHT ) { 
 		double SLA = 0.0;
 
-		this.insertedAgentes = agents;
+		this.insertedAgents = agents;
 		this.acceptableWaitingTime = serviceTime;
 		this.calls = callsPerHour;
 		this.averageAnswerTime = AHT;
 		
-		if ( this.SLA() ){
+		if ( !this.SLA() ){
 			SLA = this.calcSLA;
 		}
 		else {
@@ -245,7 +248,10 @@ public class Erlang {
 		double count = 0;
 		double sngCount = 0;
 		int maxIterate = 0;
-		double intensity = ( this.calls * this.averageAnswerTime / this.intervalInSeconds );
+		
+		if ( this.intensity == 0 ) {
+			this.intensity = ( this.calls * this.averageAnswerTime / this.intervalInSeconds );
+		}
 		
 		if ( intensity >= 0 && blocking >= 0 ) {
 			this.hasError = false;
@@ -279,30 +285,11 @@ public class Erlang {
 	 * @return nLines double - número de linhas/troncos necessários
 	 */
 	public double nLines( double intensity, double blocking ){
-		double nLines = 0;
-		double B = 0;
-		double count = 0;
-		double sngCount = 0;
-		int maxIterate = 0;
-		
-		if ( intensity >= 0 && blocking >= 0 ) {
-			maxIterate = 65535;
-			
-			for ( count = intCeiling( intensity ); count <= maxIterate; count++ ){
-				sngCount = count;
-				B = erlangB(sngCount, intensity);
-				
-				if ( B <= blocking)
-					break;
-			}
-			
-			if (count == maxIterate)
-				count = 0;
-
-			// retorna a quantidade identificada
-			nLines = count;
+		double nLines = -1;
+		this.intensity = intensity;
+		if ( !this.nLines(blocking) ){
+			nLines = this.nLines;
 		}
-		
 		return nLines;
 	}
 	/** ASA - calcula o tempo estimado de espera para o atendimento 
@@ -311,7 +298,7 @@ public class Erlang {
 	 * @param AHT - tempo médio de atendimento planejado para o intervalo
 	 * @return aveAnswer int - tempo de espera calculado
 	 */
-	public double ASA(int agents, double calls, double AHT){
+	public boolean ASA(){
 		double birthRate = 0;
 		double deathRate = 0;
 		double trafficRate = 0;
@@ -321,20 +308,48 @@ public class Erlang {
 		double C = 0;
 		double server = 0;
 		
-		birthRate = calls;
-		deathRate = intervalInSeconds / AHT;
+		if( (this.calls > 0) &&
+				( this.intervalInSeconds > 0 ) && 
+				( this.averageAnswerTime > 0 ) ) {
+			
+			this.hasError = false;
+			
+			birthRate = this.calls;
+			deathRate = this.intervalInSeconds / this.averageAnswerTime;
+			
+			// calcula a intensidade de tráfego
+			trafficRate = birthRate / deathRate;
+			server = this.insertedAgents;
+			utilisation = trafficRate / server;
+			
+			if (utilisation >= 1)
+				utilisation = 0.99;
+			
+			C = erlangC(server, trafficRate);
+			answerTime = C / ( server * deathRate * ( 1 - utilisation) );
+			aveAnswer = secs(answerTime);
+		}
+		else {
+			this.hasError = true;
+		}
+		this.calcWaitingTime = aveAnswer;
+		return this.hasError;
+	}
+	/** ASA - calcula o tempo estimado de espera para o atendimento 
+	 * @param agents int - quantidade de agentes para o intervalo
+	 * @param callsPerHour double - quantidade de chamadas para o intervalo
+	 * @param AHT - tempo médio de atendimento planejado para o intervalo
+	 * @return aveAnswer int - tempo de espera calculado
+	 */
+	public double ASA(int agents, double calls, double AHT){
+		double aveAnswer = 0;
+		this.insertedAgents = agents;
+		this.calls = calls;
+		this.averageAnswerTime = AHT;
 		
-		// calcula a intensidade de tráfego
-		trafficRate = birthRate / deathRate;
-		server = agents;
-		utilisation = trafficRate / server;
-		
-		if (utilisation >= 1)
-			utilisation = 0.99;
-		
-		C = erlangC(server, trafficRate);
-		answerTime = C / ( server * deathRate * ( 1 - utilisation) );
-		aveAnswer = secs(answerTime);
+		if( !this.ASA() ){
+			aveAnswer = this.calcWaitingTime;
+		}
 		
 		return aveAnswer;
 	}
