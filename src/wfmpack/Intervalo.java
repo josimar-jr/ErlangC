@@ -105,7 +105,7 @@ public class Intervalo extends Erlang {
 				this.getTempoEsperaAceitavel() > 0.0 &&
 				this.getChamadas() > 0 && 
 				this.getTMA() > 0.0 &&
-				this.getSegundosIntervalo() > 0 ) {
+				this.getSecondsInterval() > 0 ) {
 			
 			parametrosOk = true;
 			
@@ -116,7 +116,7 @@ public class Intervalo extends Erlang {
 			
 			// calcula a produtividade considerando o número de recursos inseridos para o intervalo
 			this.produtividadeDimensionada = (( this.getChamadas() * this.getTMA() ) / 
-												( this.getAgentesDimensionados() * this.getSegundosIntervalo() ) );
+												( this.getAgentesDimensionados() * this.getSecondsInterval() ) );
 			if (this.produtividadeDimensionada > 1)
 				this.produtividadeDimensionada = 1;
 		}
@@ -162,7 +162,7 @@ public class Intervalo extends Erlang {
 	 */
 	public void exibir(){
 		System.out.println( "---------------------------" );
-		System.out.println( "Segundos Intervalo = " + getSegundosIntervalo() );
+		System.out.println( "Segundos Intervalo = " + getSecondsInterval() );
 		System.out.println( "Nível de Serviço = " +  getNsMeta() );
 		System.out.println( "Tempo Aceitável = " + getTempoEsperaAceitavel() );
 		System.out.println( "Volume = " + getChamadas() );

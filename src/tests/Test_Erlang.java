@@ -56,9 +56,9 @@ public class Test_Erlang {
 		int tempoAceitavel = 10;
 		
 		// adiciona o período com 1/2 hora
-		erlc30m.setMinutoIntervalo(30); 
+		erlc30m.setIntervalInMinutes(30); 
 		erlc30m.agent(NS, tempoAceitavel, chamadas, TMA);
-		assertEquals(55, erlc30m.getAgenteEstimado());
+		assertEquals(55, erlc30m.getNecessaryAgents(), 0);
 	}
 
 	@Test
@@ -73,9 +73,9 @@ public class Test_Erlang {
 		double tolerancia = 0.000001;
 		
 		// adiciona o período com 1/2 hora
-		erlc30m.setMinutoIntervalo(30);
+		erlc30m.setIntervalInMinutes(30);
 		erlc30m.SLA(numAgentes, tempoAceitavel, chamadas, TMA);
-		assertEquals(nsAlvo, erlc30m.getNivelServicoEstimado(), tolerancia);
+		assertEquals(nsAlvo, erlc30m.getSLA(), tolerancia);
 	}
 
 	@Test
@@ -121,22 +121,22 @@ public class Test_Erlang {
 		
 		agents = 34;
 		segundos = 3600;
-		erlang.setSegundosIntervalo( segundos );
+		erlang.setIntervalInSeconds( segundos );
 		assertEquals(asa1h, erlang.ASA(agents, chamadas, TMA), 0.05);
 		
 		agents = 48;
 		segundos = 1800;
-		erlang.setSegundosIntervalo( segundos );
+		erlang.setIntervalInSeconds( segundos );
 		assertEquals(asa30m, erlang.ASA(agents, chamadas, TMA), 0.05);
 		
 		agents = 100;
 		segundos = 900;
-		erlang.setSegundosIntervalo( segundos );
+		erlang.setIntervalInSeconds( segundos );
 		assertEquals(asa15m, erlang.ASA(agents, chamadas, TMA), 0.05);
 		
 		agents = 140;
 		segundos = 600;
-		erlang.setSegundosIntervalo( segundos );
+		erlang.setIntervalInSeconds( segundos );
 		assertEquals(asa10m, erlang.ASA(agents, chamadas, TMA), 0.05);
 	}
 
@@ -145,36 +145,36 @@ public class Test_Erlang {
 		int minutos = 15;
 		int segundos = minutos * 60;
 		Erlang erlang = new Erlang();
-		erlang.setMinutoIntervalo(minutos);
-		assertEquals( erlang.getSegundosIntervalo(), segundos);
+		erlang.setIntervalInMinutes(minutos);
+		assertEquals( erlang.getSecondsInterval(), segundos);
 	}
 
 	@Test
 	public void testSetSegundosIntervalo() {
 		int segundos = 900;
 		Erlang erlang = new Erlang();
-		erlang.setSegundosIntervalo(segundos);
-		assertEquals( erlang.getSegundosIntervalo(), segundos);
+		erlang.setIntervalInSeconds(segundos);
+		assertEquals( erlang.getSecondsInterval(), segundos);
 	}
 
 	@Test
 	public void testGetSegundosIntervalo() {
 		int segundos = 900;
 		Erlang erlang = new Erlang();
-		erlang.setSegundosIntervalo(segundos);
-		assertEquals( erlang.getSegundosIntervalo(), segundos);
+		erlang.setIntervalInSeconds(segundos);
+		assertEquals( erlang.getSecondsInterval(), segundos);
 	}
 
 	@Test
 	public void testGetAgenteEstimado() {
 		Erlang erlang = new Erlang();
-		erlang.getAgenteEstimado();
+		erlang.getNecessaryAgents();
 	}
 
 	@Test
 	public void testGetNivelServicoEstimado() {
 		Erlang erlang = new Erlang();
-		erlang.getNivelServicoEstimado();
+		erlang.getSLA();
 	}
 
 }

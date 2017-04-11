@@ -55,7 +55,7 @@ public class WFMjr {
 					int numAgentes = 34;
 
 			    	// adiciona o período como 1 hora
-					erlc1h.setSegundosIntervalo(3600); 
+					erlc1h.setIntervalInSeconds(3600); 
 					erlc1h.agent(NS, tempoAceitavel, chamadas, TMA);
 					erlc1h.SLA(numAgentes, tempoAceitavel,chamadas,TMA);
 		
@@ -68,7 +68,7 @@ public class WFMjr {
 					numAgentes = 48;
 		
 					// adiciona o período com 1/2 hora
-					erlc30m.setMinutoIntervalo(30); 
+					erlc30m.setIntervalInMinutes(30); 
 					erlc30m.agent(NS, tempoAceitavel, chamadas, TMA);
 					erlc30m.SLA(numAgentes,tempoAceitavel,chamadas,TMA);
 		
@@ -80,7 +80,7 @@ public class WFMjr {
 					numAgentes = 59;
 		
 					// adiciona o período com 15 minutos
-					erlc15m.setMinutoIntervalo(15); 
+					erlc15m.setIntervalInMinutes(15); 
 					erlc15m.agent(NS, tempoAceitavel, chamadas, TMA);
 					erlc15m.SLA(numAgentes,tempoAceitavel,chamadas,TMA);
 		
@@ -95,7 +95,7 @@ public class WFMjr {
 					
 					//---------------------------------------------------
 					// teste classe intervalo
-					int1.setSegundosIntervalo(3600); // intervalo de 1h
+					int1.setIntervalInSeconds(3600); // intervalo de 1h
 					int1.setNsMeta(0.90); // 90%
 					int1.setTempoEsperaAceitavel(10); // 10 segundos
 					int1.setChamadas(667); // qtde chamadas
@@ -104,7 +104,7 @@ public class WFMjr {
 					int1.setAgentesDimensionados(34); // recursos dimensionados para o intervalo
 					int1.exibir();
 					
-					int2.setSegundosIntervalo(1800); // intervalo de 1h
+					int2.setIntervalInSeconds(1800); // intervalo de 1h
 					int2.setNsMeta(0.90); // 90%
 					int2.setTempoEsperaAceitavel(10); // 10 segundos
 					int2.setChamadas(180); // qtde chamadas
@@ -113,7 +113,7 @@ public class WFMjr {
 					int2.setAgentesDimensionados(48); // recursos dimensionados para o intervalo
 					int2.exibir();
 					
-					int3.setSegundosIntervalo(900); // intervalo de 1h
+					int3.setIntervalInSeconds(900); // intervalo de 1h
 					int3.setNsMeta(0.90); // 90%
 					int3.setTempoEsperaAceitavel(10); // 10 segundos
 					int3.setChamadas(180); // qtde chamadas

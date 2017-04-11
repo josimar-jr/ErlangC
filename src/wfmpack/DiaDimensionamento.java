@@ -248,7 +248,7 @@ public class DiaDimensionamento extends Schedule {
 					// valores fixos para o dia: NS e Tempo Espera
 					tempIntervalo.setNsMeta(this.getNsMeta());
 					tempIntervalo.setTempoEsperaAceitavel(this.getTempoAceitavelNs());
-					tempIntervalo.setSegundosIntervalo( this.getSegundosIntervalo() );
+					tempIntervalo.setIntervalInSeconds( this.getSegundosIntervalo() );
 	
 					// valores variáveis para o dia
 					tempDiaHora = new GregorianCalendar(dia.get(Calendar.YEAR), dia.get(Calendar.MONTH), dia.get(Calendar.DAY_OF_MONTH), 
