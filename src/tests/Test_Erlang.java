@@ -11,6 +11,20 @@ public class Test_Erlang {
 	@Test
 	public void testErlang() {
 		Erlang erlang = new Erlang();
+		assertTrue(erlang.hasError());
+		assertEquals( 5, erlang.getErrors().size() );
+		erlang.finalize();
+		
+		// criar instância do objeto usando todos os parâmetros
+		int intervalInSeconds = 900;
+		double targetSLA = 0.90;
+		int targetTime = 10;
+		double calls = 900;
+		double averageAnswerTime = 145;
+		int insertedAgents = 80;
+		double blockingPercentage = 0.01;
+		erlang = new Erlang( intervalInSeconds, targetSLA, targetTime, calls, averageAnswerTime, insertedAgents, blockingPercentage );
+		assertFalse( erlang.hasError() );
 	}
 
 	@Test
@@ -22,6 +36,8 @@ public class Test_Erlang {
 		double TMA = 150;
 
 		Erlang erlang = new Erlang( intervaloEmSegundos, SLAMeta, tempoEsperaAceitavel, chamadas, TMA );
+		assertFalse( erlang.getErrors().containsKey( Erlang.errorAgent ));
+		assertTrue( erlang.getErrors().containsKey( Erlang.errorSLA ));
 	}
 
 	@Test
@@ -33,6 +49,8 @@ public class Test_Erlang {
 		int numAgentes = 59;
 
 		Erlang erlang = new Erlang(intervaloEmSegundos, numAgentes, tempoEsperaAceitavel, chamadas, TMA);
+		assertFalse( erlang.getErrors().containsKey( Erlang.errorSLA ));
+		assertTrue( erlang.getErrors().containsKey( Erlang.errorAgent ));
 	}
 
 	@Test
@@ -141,7 +159,7 @@ public class Test_Erlang {
 	}
 
 	@Test
-	public void testSetMinutoIntervalo() {
+	public void testSetIntervalInMinutes() {
 		int minutos = 15;
 		int segundos = minutos * 60;
 		Erlang erlang = new Erlang();
@@ -150,7 +168,7 @@ public class Test_Erlang {
 	}
 
 	@Test
-	public void testSetSegundosIntervalo() {
+	public void testSetIntervalInSeconds() {
 		int segundos = 900;
 		Erlang erlang = new Erlang();
 		erlang.setIntervalInSeconds(segundos);
@@ -158,7 +176,7 @@ public class Test_Erlang {
 	}
 
 	@Test
-	public void testGetSegundosIntervalo() {
+	public void testGetSecondsInterval() {
 		int segundos = 900;
 		Erlang erlang = new Erlang();
 		erlang.setIntervalInSeconds(segundos);
@@ -166,13 +184,13 @@ public class Test_Erlang {
 	}
 
 	@Test
-	public void testGetAgenteEstimado() {
+	public void testGetNecessaryAgents() {
 		Erlang erlang = new Erlang();
 		erlang.getNecessaryAgents();
 	}
 
 	@Test
-	public void testGetNivelServicoEstimado() {
+	public void testGetSLA() {
 		Erlang erlang = new Erlang();
 		erlang.getSLA();
 	}

@@ -1,10 +1,15 @@
 package wfmpack;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Erlang {
 	
 	public static final double maxAccuracy = 0.00001;
+	public static final int errorAgent = 1;
+	public static final int errorSLA = 2;
+	public static final int errorASA = 3;
+	public static final int errorLines = 4;
+	public static final int errorProductivity = 5;
 	
 	// declaração dos atributos
 	private int intervalInSeconds;
@@ -20,14 +25,14 @@ public class Erlang {
 	private double calcWaitingTime;
 	private double blockingPercentage;
 	private double productivity;
-	private boolean hasError;
-	private ArrayList<String> errors = new ArrayList<>();
+	private HashMap<Integer, String> errors = new HashMap<Integer, String>();
 
 	//declaração dos contrutores
 	/** Construtor básico para inicialização posterior dos valores 
 	 * @return objeto do tipo Erlang para uso dos métodos agent e SLA
 	 */
 	public Erlang() {
+		this.load();
 	}
 	
 	/** construtor específico para iniciar calculando a quantidade de recursos necessários
@@ -46,7 +51,7 @@ public class Erlang {
 		this.setTargetTime(tempoEsperaAceitavel);
 		this.setCalls(chamadas);
 		this.setAverageAnswerTime(TMA);
-		this.agent();
+		this.load();
 	}
 	
 	/** Construtor específico para iniciar calculando o nível de serviço
@@ -60,11 +65,24 @@ public class Erlang {
 	 */
 	public Erlang( int intervaloSegundos, int numAgentes, int tempoEsperaAceitavel, double chamadas, double TMA ){
 		this.setIntervalInMinutes(intervaloSegundos);
-		this.setInsertedAgents(numAgentes);
+		this.insertAgents(numAgentes);
 		this.setTargetTime(tempoEsperaAceitavel);
 		this.setCalls(chamadas);
 		this.setAverageAnswerTime(TMA);
-		this.SLA();
+		this.load();
+	}
+	/** Construtor específico para inicializar todos os atributos da classe
+	 * @return objeto Erlang
+	 */
+	public Erlang( int interval, double sla, int acceptTime, double calls, double tma, int insAgents, double blocking ){
+		this.setIntervalInSeconds(interval);
+		this.setTargetSLA(sla);
+		this.setTargetTime(acceptTime);
+		this.setCalls(calls);
+		this.setAverageAnswerTime(tma);
+		this.insertAgents(insAgents);
+		this.setBlockingPercentage(blocking);
+		this.load();
 	}
 	
 	// início declaração dos métodos públicos
@@ -92,7 +110,7 @@ public class Erlang {
 				( this.calls > 0 ) &&
 				( this.averageAnswerTime > 0 ) ) {
 
-			this.hasError = false;
+			this.removeError(errorAgent);
 
 			if (this.targetSLA > 1){
 				this.targetSLA = 1;
@@ -150,9 +168,8 @@ public class Erlang {
 		}
 		else {
 			// caso os parâmetros não estejam preenchidos
-			this.hasError = true;
 			noAgents  = -1;
-			this.errors.add("Informe todos os parâmetros para a execução do método.");
+			this.errors.put( errorAgent, "Informações incompletas para calcular agent.");
 		}
 		this.necessaryAgents = noAgents;
 		return !this.hasError();
@@ -193,7 +210,7 @@ public class Erlang {
 				( this.averageAnswerTime > 0) &&
 				( this.intervalInSeconds > 0 ) ){
 
-			this.hasError = false;
+			this.errors.remove(errorSLA);
 			
 			birthRate = this.calls;
 			deathRate = this.intervalInSeconds / this.averageAnswerTime;
@@ -215,8 +232,9 @@ public class Erlang {
 			this.calcSLA = minMax(SLQueued, 0, 1); // garante que o resultado esteja dentro dos limites
 		}
 		else {
-			this.hasError = true;
+			// caso parâmetros não estejam preenchidos
 			this.calcSLA = 0;
+			this.errors.put( errorSLA, "Parâmetros insuficientes para calcular SLA.");
 		}
 			
 		return !this.hasError();
@@ -233,7 +251,7 @@ public class Erlang {
 	public double SLA( int agents, int serviceTime, double callsPerHour, double AHT ) { 
 		double SLA = 0.0;
 
-		this.setInsertedAgents(agents);
+		this.insertAgents(agents);
 		this.setTargetTime(serviceTime);
 		this.setCalls(callsPerHour);
 		this.setAverageAnswerTime(AHT);
@@ -261,8 +279,10 @@ public class Erlang {
 			this.intensity = ( this.calls * this.averageAnswerTime / this.intervalInSeconds );
 		}
 		
-		if ( this.intensity >= 0 && this.blockingPercentage >= 0 ) {
-			this.hasError = false;
+		if ( (this.intensity > 0) && (this.blockingPercentage > 0) ) {
+			
+			this.removeError(errorLines);
+			
 			maxIterate = 65535;
 			
 			for ( count = intCeiling( this.intensity ); count <= maxIterate; count++ ){
@@ -280,8 +300,8 @@ public class Erlang {
 			this.nLines = count;
 		}
 		else {
-			this.hasError = true;
 			this.nLines = -1;
+			this.errors.put(errorLines, "Parâmetros insuficientes para calcular a quantidade de linhas");
 		}
 		
 		return !this.hasError();
@@ -296,7 +316,7 @@ public class Erlang {
 		double nLines = -1;
 		this.intensity = intensity;
 		this.setBlockingPercentage(blocking);
-		if ( this.nLines() ){
+		if ( !this.nLines() ){
 			nLines = this.getLines();
 		}
 		return nLines;
@@ -318,7 +338,7 @@ public class Erlang {
 				( this.intervalInSeconds > 0 ) && 
 				( this.averageAnswerTime > 0 ) ) {
 			
-			this.hasError = false;
+			this.removeError(errorASA);
 			
 			birthRate = this.calls;
 			deathRate = this.intervalInSeconds / this.averageAnswerTime;
@@ -337,7 +357,7 @@ public class Erlang {
 			aveAnswer = secs(answerTime);
 		}
 		else {
-			this.hasError = true;
+			this.errors.put(errorASA, "Parâmetros insuficientes para calcular o ASA.");
 		}
 		this.calcWaitingTime = aveAnswer;
 		return !this.hasError();
@@ -350,11 +370,11 @@ public class Erlang {
 	 */
 	public double ASA(int agents, double calls, double AHT){
 		double aveAnswer = 0;
-		this.setInsertedAgents(agents);
+		this.insertAgents(agents);
 		this.setCalls(calls);
 		this.setAverageAnswerTime(AHT);
 		
-		if( this.ASA() ){
+		if( !this.ASA() ){
 			aveAnswer = this.getWaitingTime();
 		}
 		return aveAnswer;
@@ -363,7 +383,7 @@ public class Erlang {
 	 * @return boolean, determina se existe erro ou não.
 	 */
 	public boolean hasError(){
-		return this.hasError;
+		return ( !this.errors.isEmpty() );
 	}
 	
 	//--------------------------------------------------------
@@ -375,7 +395,7 @@ public class Erlang {
 	 */
 	public void setIntervalInMinutes( int minutos ){
 		intervalInSeconds = minutos * 60 ;
-		return ;
+		return;
 	}
 	/** setIntervalInSeconds: define o valor em segundos do intervalo para calcular os recursos e nível de serviço
 	 * também preenche o valor em minutos do intervalo 
@@ -394,7 +414,7 @@ public class Erlang {
 	/** setInsertedAgents: Define a quantidade de atendentes
 	 * @param agents int - quantidade de agentes para o intervalo
 	 */
-	public void setInsertedAgents( int agents ){
+	public void insertAgents( int agents ){
 		this.insertedAgents = agents;
 		this.load();
 		return;
@@ -504,6 +524,17 @@ public class Erlang {
 	 */
 	public double getProductivity(){
 		return this.productivity;
+	}
+	/** getErrors: Retorna o hash de erros
+	 * @return errors HashMap - hash de erros
+	 */
+	public HashMap<Integer, String> getErrors(){
+		return this.errors;
+	}
+	/** finalize: Finaliza o objeto e limpa os dados de erros
+	 */
+	public void finalize(){
+		this.errors.clear();
 	}
 	//--------------------------------------------------------
 	//  Setters e Getters // FIM
@@ -615,6 +646,9 @@ public class Erlang {
 				this.productivity = 1;
 			}
 		}
+		else {
+			this.errors.put(errorProductivity, "Parâmetros insuficientes para calcular a produtividade.");
+		}
 		// calculando os agentes necessários
 		this.agent();
 		
@@ -636,6 +670,14 @@ public class Erlang {
 				(this.intervalInSeconds > 0)){
 			
 			this.intensity = ( this.calls * this.averageAnswerTime / this.intervalInSeconds );
+		}
+	}
+	/** removeError - remove um erro do mapeamento dos erros
+	 * @param 	key, int - chave para a busca e remoção do erro.
+	 */
+	private void removeError( int key ){
+		if (this.errors.containsKey(key)){
+			this.errors.remove(key);
 		}
 	}
 }
