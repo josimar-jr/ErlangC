@@ -11,8 +11,8 @@ public class Test_Erlang {
 	@Test
 	public void testErlang() {
 		Erlang erlang = new Erlang();
-		assertTrue(erlang.hasError());
-		assertEquals( 5, erlang.getErrors().size() );
+		assertTrue("Deveria existir erros em função do load() com os parâmetros não preenchidos.", erlang.hasError());
+		assertEquals( "Deveria existir 5 erros listados na classe.", 5, erlang.getErrors().size() );
 		erlang.finalize();
 		
 		// criar instância do objeto usando todos os parâmetros
@@ -24,7 +24,7 @@ public class Test_Erlang {
 		int insertedAgents = 80;
 		double blockingPercentage = 0.01;
 		erlang = new Erlang( intervalInSeconds, targetSLA, targetTime, calls, averageAnswerTime, insertedAgents, blockingPercentage );
-		assertFalse( erlang.hasError() );
+		assertFalse( "Não deveria existir erros.", erlang.hasError() );
 	}
 
 	@Test
@@ -36,8 +36,8 @@ public class Test_Erlang {
 		double TMA = 150;
 
 		Erlang erlang = new Erlang( intervaloEmSegundos, SLAMeta, tempoEsperaAceitavel, chamadas, TMA );
-		assertFalse( erlang.getErrors().containsKey( Erlang.errorAgent ));
-		assertTrue( erlang.getErrors().containsKey( Erlang.errorSLA ));
+		assertFalse( "Não deveria ter erro para o cálculo de agents().", erlang.getErrors().containsKey( Erlang.errorAgent ));
+		assertTrue( "Deveria existir erro para o cálculo de sla().", erlang.getErrors().containsKey( Erlang.errorSLA ));
 	}
 
 	@Test
@@ -49,8 +49,8 @@ public class Test_Erlang {
 		int numAgentes = 59;
 
 		Erlang erlang = new Erlang(intervaloEmSegundos, numAgentes, tempoEsperaAceitavel, chamadas, TMA);
-		assertFalse( erlang.getErrors().containsKey( Erlang.errorSLA ));
-		assertTrue( erlang.getErrors().containsKey( Erlang.errorAgent ));
+		assertFalse( "Não deveria existir erro para o cálculo de sla().", erlang.getErrors().containsKey( Erlang.errorSLA ));
+		assertTrue( "Deveria ter erro para o cálculo de agents().", erlang.getErrors().containsKey( Erlang.errorAgent ));
 	}
 
 	@Test
@@ -76,7 +76,7 @@ public class Test_Erlang {
 		// adiciona o período com 1/2 hora
 		erlc30m.setIntervalInMinutes(30); 
 		erlc30m.agent(NS, tempoAceitavel, chamadas, TMA);
-		assertEquals(55, erlc30m.getNecessaryAgents(), 0);
+		assertEquals( "Deveria calcular 55 agentes.", 55, erlc30m.getNecessaryAgents(), 0);
 	}
 
 	@Test
@@ -93,7 +93,7 @@ public class Test_Erlang {
 		// adiciona o período com 1/2 hora
 		erlc30m.setIntervalInMinutes(30);
 		erlc30m.SLA(numAgentes, tempoAceitavel, chamadas, TMA);
-		assertEquals(nsAlvo, erlc30m.getSLA(), tolerancia);
+		assertEquals( "Deveria resultar o nível de serviço aproximadamente 47,53%.", nsAlvo, erlc30m.getSLA(), tolerancia);
 	}
 
 	@Test
@@ -111,16 +111,16 @@ public class Test_Erlang {
 		int trunks10m = 154;
 		
 		segundos = 3600;
-		assertEquals(trunks1h, erlang.nLines((chamadas * TMA / segundos), blocking ), 0.0);
+		assertEquals( "Deveria calcular as linhas igual a 33.", trunks1h, erlang.nLines((chamadas * TMA / segundos), blocking ), 0.0);
 		
 		segundos = 1800;
-		assertEquals(trunks30m, erlang.nLines((chamadas * TMA / segundos), blocking ), 0.0);
+		assertEquals( "Deveria calcular as linhas igual a 58.", trunks30m, erlang.nLines((chamadas * TMA / segundos), blocking ), 0.0);
 		
 		segundos = 900;
-		assertEquals(trunks15m, erlang.nLines((chamadas * TMA / segundos), blocking ), 0.0);
+		assertEquals( "Deveria calcular as linhas igual a 107.", trunks15m, erlang.nLines((chamadas * TMA / segundos), blocking ), 0.0);
 		
 		segundos = 600;
-		assertEquals(trunks10m, erlang.nLines((chamadas * TMA / segundos), blocking ), 0.0);
+		assertEquals( "Deveria calcular as linhas igual a 154.", trunks10m, erlang.nLines((chamadas * TMA / segundos), blocking ), 0.0);
 	}
 
 	@Test
@@ -140,22 +140,22 @@ public class Test_Erlang {
 		agents = 34;
 		segundos = 3600;
 		erlang.setIntervalInSeconds( segundos );
-		assertEquals(asa1h, erlang.ASA(agents, chamadas, TMA), 0.05);
+		assertEquals( "Espera deveria ser aproximadamente 0,6s.", asa1h, erlang.ASA(agents, chamadas, TMA), 0.05);
 		
 		agents = 48;
 		segundos = 1800;
 		erlang.setIntervalInSeconds( segundos );
-		assertEquals(asa30m, erlang.ASA(agents, chamadas, TMA), 0.05);
+		assertEquals( "Espera deveria ser aproximadamente 84,1s.", asa30m, erlang.ASA(agents, chamadas, TMA), 0.05);
 		
 		agents = 100;
 		segundos = 900;
 		erlang.setIntervalInSeconds( segundos );
-		assertEquals(asa15m, erlang.ASA(agents, chamadas, TMA), 0.05);
+		assertEquals( "Espera deveria ser aproximadamente 9,8s.", asa15m, erlang.ASA(agents, chamadas, TMA), 0.05);
 		
 		agents = 140;
 		segundos = 600;
 		erlang.setIntervalInSeconds( segundos );
-		assertEquals(asa10m, erlang.ASA(agents, chamadas, TMA), 0.05);
+		assertEquals( "Espera deveria ser aproximadamente 51,1s.", asa10m, erlang.ASA(agents, chamadas, TMA), 0.05);
 	}
 
 	@Test
@@ -164,7 +164,7 @@ public class Test_Erlang {
 		int segundos = minutos * 60;
 		Erlang erlang = new Erlang();
 		erlang.setIntervalInMinutes(minutos);
-		assertEquals( erlang.getSecondsInterval(), segundos);
+		assertEquals( "Segundos deveria ser igual 900.", erlang.getSecondsInterval(), segundos);
 	}
 
 	@Test
@@ -172,7 +172,7 @@ public class Test_Erlang {
 		int segundos = 900;
 		Erlang erlang = new Erlang();
 		erlang.setIntervalInSeconds(segundos);
-		assertEquals( erlang.getSecondsInterval(), segundos);
+		assertEquals( "Segundos deveria ser igual a 900.", erlang.getSecondsInterval(), segundos);
 	}
 
 	@Test
@@ -180,7 +180,7 @@ public class Test_Erlang {
 		int segundos = 900;
 		Erlang erlang = new Erlang();
 		erlang.setIntervalInSeconds(segundos);
-		assertEquals( erlang.getSecondsInterval(), segundos);
+		assertEquals( "Segundos deveria ser igual a 900.", erlang.getSecondsInterval(), segundos);
 	}
 
 	@Test
