@@ -6,6 +6,6 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({ Test_Erlang.class,
-	tipoCurvaTest.class })
+	Test_tipoCurva.class })
 public class UnitTests {
 }

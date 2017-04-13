@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
-
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -38,8 +37,7 @@ public class FileCurvas {
 		return curvas;
 	}
 	
-	/** getCurvaEspecifica - 
-	 * 	Captura as informações de uma curva em um objeto de com a lista de {@link Curvas} [ {@link FileCurvas} ]
+	/** getCurvaEspecifica - captura as informações de uma curva em um objeto de com a lista de {@link Curvas} [ {@link FileCurvas} ]
 	 * @param x	int, indica qual o elemento da lista deseja utilizar
 	 * @return	tempCv	{@link Curvas}, objeto com as informações da curva para o dia intervalo a intervalo
 	 */
@@ -52,8 +50,7 @@ public class FileCurvas {
 		return tempCv;
 	}
 
-	/** lerArquivo
-	 * executa a leitura do arquivo indicado no path e se a importação dos dados aconteceu com sucesso
+	/** lerArquivo - executa a leitura do arquivo indicado no path e se a importação dos dados aconteceu com sucesso
 	 * @return lOk 	boolean, determina se conseguiu realizar a leitura com sucesso do arquivo
 	 */
 	public boolean lerArquivo(){
@@ -150,6 +147,5 @@ public class FileCurvas {
 			System.out.println("_______________________________________");
 			x.exibir();
 		}
-		
 	}
 }

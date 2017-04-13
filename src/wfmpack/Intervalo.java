@@ -140,21 +140,8 @@ public class Intervalo extends Erlang {
 	 * @return boolean - indica se foi possível calcular os recursos ou não
 	 */
 	public boolean calcularAgentes() {
-		boolean calculou = true;
-		
-		if ( this.getNsMeta() > 0.0 &&
-				this.getTempoEsperaAceitavel() > 0 &&
-				this.getChamadas() > 0.0 &&
-				this.getTMA() > 0.0){
-			
-			agentesNecessarios = this.agent(this.getNsMeta(), this.getTempoEsperaAceitavel(), this.getChamadas(), this.getTMA());
-			
-		} else {
-			calculou = false;
-			agentesNecessarios = 0;
-		}
-
-		return calculou;
+		agentesNecessarios = this.agent(this.getNsMeta(), this.getTempoEsperaAceitavel(), this.getChamadas(), this.getTMA());
+		return !this.hasError();
 	}
 	
 	/** exibir as informações em saída básica (texto... System.out.println)
