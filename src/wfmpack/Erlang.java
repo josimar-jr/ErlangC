@@ -450,8 +450,8 @@ public class Erlang {
 	/** getTargetTime: Retorna qual o tempo aceitável de espera para o nível de serviço
 	 * @return targetSLA double - tempo aceitável de espera
 	 */
-	public double getTargetTime(){
-		return this.targetSLA;
+	public int getTargetTime(){
+		return this.targetTime;
 	}
 	/** setCalls: Define qual a quantidade de chamadas para os cáculos
 	 * @param calls double - quantidade de chamadas
