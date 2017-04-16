@@ -12,6 +12,11 @@ public class Intervalo extends Erlang {
 
 	//--------------------------------------
 	// métodos públicos
+	/** Construtor sem parâmetros
+	 */
+	public Intervalo(){
+	}
+	
 	/** getData()
 	 * @return o dia e hora configurado para o intervalo
 	 */
