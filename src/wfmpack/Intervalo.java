@@ -93,8 +93,7 @@ public class Intervalo extends Erlang {
 	 * @param agentesDimensionados int - número de recursos dimensionado para o intervalo
 	 */
 	public boolean setAgentesDimensionados(int agentesDimensionados) {
-		
-		this.SLA(this.getAgentesDimensionados(),
+		this.SLA( agentesDimensionados,
 				this.getTempoEsperaAceitavel(),
 				this.getChamadas(),
 				this.getTMA());

@@ -645,6 +645,7 @@ public class Erlang {
 			if (this.productivity > 1){
 				this.productivity = 1;
 			}
+			this.removeError(errorProductivity);
 		}
 		else {
 			this.errors.put(errorProductivity, "Parâmetros insuficientes para calcular a produtividade.");

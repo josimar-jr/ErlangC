@@ -36,14 +36,15 @@ public class Test_Intervalo {
 		int15m.setChamadas(180); // qtde chamadas
 		
 		assertFalse( "Não deveria calcular o agents().", int15m.calcularAgentes() );
-		assertFalse( "Não deveria calcular o sla().", int15m.setAgentesDimensionados(100));
+		assertFalse( "Não deveria calcular o sla().", int15m.setAgentesDimensionados(0));
 		
 		int15m.setTMA(450); // valor do tma em segundos
+		int15m.setAgentesDimensionados(100); 
 		assertTrue( "Deveria calcular o agents().", int15m.calcularAgentes());
-		assertTrue( "Deveria calcular o sla().", int15m.setAgentesDimensionados(100)); // recursos dimensionados para o intervalo
+		assertFalse( "Não deveria ter erros.", int15m.hasError() );
 		
 		assertEquals( "Agentes necessários deveriam ser 103", agentsAlvo, int15m.getAgentesNecessarios());
-		assertEquals( "Nível de serviço deveria ser aproximadamente 82,62%.", slaAlvo, int15m.getNsDimensionado(), 0.000001 );
+		assertEquals( "Nível de serviço deveria ser aproximadamente 82,62%.", slaAlvo, int15m.getNsDimensionado(), 0.00009 );
 	}
 
 }
