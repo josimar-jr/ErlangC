@@ -30,7 +30,7 @@ public class Test_Intervalo {
 		double slaAlvo = 0.8262;
 		
 		int15m.setIntervalInSeconds(900); // intervalo de 15 minutos
-		int15m.setBlockingPercentage(0.01);
+		int15m.setBlockingPercentage(0.01);  // percentual de bloqueio das chamadas para o cálculo das linhas
 		int15m.setNsMeta(0.90); // 90%
 		int15m.setTempoEsperaAceitavel(10); // 10 segundos
 		int15m.setChamadas(180); // qtde chamadas
