@@ -42,8 +42,9 @@ public class Curvas {
 			intAdd.setVolume(volume);
 			intAdd.setTma(tma);
 		}
-		else
+		else {
 			lok = false;
+		}
 	
 		return lok;
 	}
@@ -91,6 +92,20 @@ public class Curvas {
 			dado.setPercentVolume( dado.getVolume() / this.totalVolume );
 			dado.setPercentTMA( dado.getTma() / this.totalTMA );
 		}
+	}
+	
+	/** getTotalVolume: retorna o volume de chamadas 
+	 * @return totalVolume - total de chamadas dos intervalos
+	 */
+	public double getTotalVolume(){
+		return this.totalVolume;
+	}
+	
+	/** getTotalTMA: retorna a média de tma  
+	 * @return totalTMA - média do tma dos intevalos
+	 */
+	public double getTotalTMA(){
+		return this.totalTMA;
 	}
 	
 	/** exibir - saída básica das informações lidas

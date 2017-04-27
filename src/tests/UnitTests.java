@@ -8,6 +8,7 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuiteClasses({ Test_Erlang.class,
 	Test_tipoCurva.class,
 	Test_Intervalo.class,
-	Test_IntervaloCurvas.class })
+	Test_IntervaloCurvas.class,
+	Test_Curvas.class })
 public class UnitTests {
 }
