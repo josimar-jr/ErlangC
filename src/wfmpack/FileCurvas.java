@@ -14,13 +14,19 @@ public class FileCurvas {
 	
 	ArrayList<Curvas> curvas = new ArrayList<Curvas>();
 	String path = "";
-
+	
+	/** FileCurvas - construtor sem parâmetros
+	 */
+	public FileCurvas(){
+	}
+	
 	/** setPath - define o diretório e arquivo a serem utilizado na leitura das curvas
 	 * @param path	String, caminho completo com o nome do arquivo para leitura. Exemplo: c:\testes\arquivos\curvas.xlsx
 	 */
 	public void setPath( String path ){
-		if ( !path.isEmpty() )
+		if ( !path.isEmpty() ) {
 				this.path = path;
+		}
 	}
 	
 	/** getPath - retorna o caminho/diretório e arquivo configurado para leitura
@@ -44,8 +50,9 @@ public class FileCurvas {
 	public Curvas getCurvaEspecifica( int x ){
 		Curvas tempCv = null;
 		
-		if ( x < this.curvas.size() )
+		if ( x < this.curvas.size() ) {
 			tempCv = this.curvas.get(x);
+		}
 			
 		return tempCv;
 	}
@@ -54,7 +61,7 @@ public class FileCurvas {
 	 * @return lOk 	boolean, determina se conseguiu realizar a leitura com sucesso do arquivo
 	 */
 	public boolean lerArquivo(){
-		boolean lOk = true;
+		boolean lOk = false;
 		String pathFile = this.getPath();
 		FileInputStream fileImport;
 		XSSFWorkbook planilha;
@@ -81,8 +88,11 @@ public class FileCurvas {
 				// identifica o número de aba na planilha
 				abas = planilha.getNumberOfSheets();
 				
+				// marca a leitura com sucesso
+				lOk = true;
+				
 				// itera pelas abas para leitura de todas as curvas
-				for (int x = 0 ; x < abas ; x++){
+				for (int x = 0 ; (lOk && x < abas) ; x++){
 
 					// Selecionando a aba a ler o conteúdo
 					aba = planilha.getSheetAt(x);
@@ -114,13 +124,18 @@ public class FileCurvas {
 							if (horario != null) {
 								gregCalFormat = new GregorianCalendar(2015, 1, 1, horario.getHours(), horario.getMinutes());
 								
-								if(valorVolume > 0.0 && valorTMA > 0.0 && gregCalFormat != null)
+								if(valorVolume > 0.0 && valorTMA > 0.0 && gregCalFormat != null) {
 									lOk = tempCurvas.adicionarInformacao( gregCalFormat, valorVolume, valorTMA );
-								else
+								} 
+								else {
 									lOk = tempCurvas.adicionarInformacao( valorVolume, valorTMA );
+								}
 							}
-							else if ( valorVolume != 0 && valorTMA != 0 )
-								lOk = tempCurvas.adicionarInformacao( valorVolume, valorTMA );
+							else {
+								if ( valorVolume != 0 && valorTMA != 0 ) {
+									lOk = tempCurvas.adicionarInformacao( valorVolume, valorTMA );
+								}
+							}
 						}
 					}
 					// adiciona as informações de sumarizadores do objeto

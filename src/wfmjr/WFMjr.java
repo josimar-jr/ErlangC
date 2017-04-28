@@ -33,7 +33,6 @@ public class WFMjr {
 		System.out.println("2 - Classe Intervalo");
 		System.out.println("3 - Classe FileCurvas");
 		System.out.println("4 - Classe DiaDimensionamento");
-		System.out.println("5 - Classe WFMpack");
 		System.out.println("Digite o número do teste desejado:");
 		 
 		try{
@@ -124,7 +123,7 @@ public class WFMjr {
 					break;
 				
 			    case "3" :
-			    	cpathfile = "C:\\Users\\Junior\\Dropbox\\devs\\wfm\\files\\testes\\testeimport.xlsx";
+			    	cpathfile = "src/tests/resources/testeimport.xlsx";
 					fc = new FileCurvas();
 					
 					fc.setPath(cpathfile);
@@ -135,7 +134,7 @@ public class WFMjr {
 					break;
 					
 			    case "4" :
-			    	cpathfile = "C:\\Users\\Junior\\Dropbox\\devs\\wfm\\files\\testes\\curva_teste1.xlsx";
+			    	cpathfile = "src/tests/resources/testeimport.xlsx";
 					fc = new FileCurvas();
 					double diaDimeChamadas = 2348;
 					double diaDimeTMA = 450;
@@ -147,9 +146,9 @@ public class WFMjr {
 					fc.setPath(cpathfile);
 					if ( fc.lerArquivo() ) {
 						
-						// atribui a quantidade total de intervalos do dimensionamento e
-						// o número de intervalos que cada agente atuará
+						// atribui a quantidade total de intervalos do dimensionamento
 						diaDime.setTotalIntervalos(18);
+						// o número de intervalos que cada agente atuará
 						diaDime.setQtdeIntervalosAgentes(12);
 						
 						// adiciona um tipo de curva qualquer para o dia
@@ -195,7 +194,7 @@ public class WFMjr {
 					else
 						System.out.println("Leitura das curvas sem sucesso");
 					break;
-					
+				
 			    default:
 			    	System.out.println("Opção não identificada!");
 		    }
