@@ -147,7 +147,7 @@ public class FileCurvas {
 				
 			}
 		} catch (Exception e){
-			e.printStackTrace();
+			lOk = false;
 		}
 		
 		return lOk;
@@ -162,5 +162,12 @@ public class FileCurvas {
 			System.out.println("_______________________________________");
 			x.exibir();
 		}
+	}
+	
+	/** finalize: Finaliza o objeto e limpa os dados dos intervalos
+	 */
+	public void finalize(){
+		this.curvas.clear();
+		this.path = "";
 	}
 }

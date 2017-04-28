@@ -18,6 +18,7 @@ public class Test_Curvas {
 		curva.setTipoCurva(tp);
 		
 		assertEquals( "Tipo da curva deveria ser o mesmo", tipoCurva.getStringPeloTipo(tp), tipoCurva.getStringPeloTipo( curva.getTipoCurva() ) );
+		curva.finalize();
 	}
 
 	@Test

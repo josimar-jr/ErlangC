@@ -9,7 +9,7 @@ public class Curvas {
 	ArrayList <IntervaloCurvas> dadosIntervalo = new ArrayList<IntervaloCurvas>();
 	// característica da curva
 	// indicará se é semana <SEM(0)>
-	// algum dia específico dom(7), seg(1), ter(2), sab(6)
+	// algum dia específico dom(7), seg(1), ter(2)... sab(6)
 	tipoCurva tipo;
 
 	double totalVolume = 0;
@@ -129,5 +129,11 @@ public class Curvas {
 			
 			System.out.println( hora + " \t " + intVolume + " \t " + intTma );
 		}
+	}
+	
+	/** finalize: Finaliza o objeto e limpa os dados de erros
+	 */
+	public void finalize(){
+		this.dadosIntervalo.clear();
 	}
 }
