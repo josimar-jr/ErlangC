@@ -17,6 +17,11 @@ public class Schedule{
 	private boolean activate = false;
 	private boolean l24horas = false;
 
+	/** Construtor sem parâmetros
+	 */
+	public Schedule(){
+	}
+	
 	/** somarAgentesEmLinha
 	 * Calcula o número de agente adicionados para a linha
 	 * @param row	int, número da linha a ser avaliada
@@ -25,25 +30,27 @@ public class Schedule{
 	protected int somarAgentesEmLinha( int row ){
 		int valor = 0;
 		
-		for ( int n = 1; n < MAX_COLUNAS; n++ )
+		for ( int n = 1; n < MAX_COLUNAS; n++ ) {
 			valor += this.schedule[row][n];
+		}
 		
 		return valor;
 	}
 	
 	/** getColuna 
-	 * método para identificar qual em qual coluna a quantidade de agentes deverá ser inserida
+	 * método para identificar em qual coluna a quantidade de agentes deverá ser inserida
 	 * @param nLinha	int, número da linha que a qtde será atribuída
 	 * @return x	int, retorna o número da coluna para inserir a informação
 	 */
 	protected int getColuna( int nLinha ){
 		int x = 1;
 		
-		for (int z = 1; (z < MAX_COLUNAS); z++ )
+		for (int z = 1; (z < MAX_COLUNAS); z++ ) {
 			if ( z == nLinha ) {
 				x = z;
 				break;
 			}
+		}
 		return x;
 	}
 	
@@ -57,8 +64,9 @@ public class Schedule{
 	 * @param QtdeIntervalosAgentes the QtdeIntervalosAgentes to set
 	 */
 	public void setQtdeIntervalosAgentes(int quantityIntervals) {
-		if (!this.isActivate())
+		if (!this.isActivate()) {
 			this.qtdeIntervalosAgentes = quantityIntervals;
+		}
 	}
 	/** getTotalIntervalos
 	 * @return the totalIntervalos
@@ -70,8 +78,9 @@ public class Schedule{
 	 * @param totalIntervalos the totalIntervalos to set
 	 */
 	public void setTotalIntervalos(int totalIntervals) {
-		if (!this.isActivate())
+		if (!this.isActivate()){
 			this.totalIntervalos = totalIntervals;
+		}
 	}
 	/** IsActivate - indica se o objeto está ativo para realizar a inclusão dos agentes
 	 * @return activate 	boolean, indica se o objeto está ativo (true) ou não (false)
@@ -150,8 +159,9 @@ public class Schedule{
 	public int getTotalAgentesLinha( int linha ){
 		int total = 0;
 		
-		if (linha < MAX_COLUNAS && linha >= 0 )
+		if (linha < MAX_COLUNAS && linha >= 0 ) {
 			total = this.schedule[linha][COLUNA_SOMA_AGENTES];
+		}
 		
 		return total;
 	}

@@ -13,6 +13,7 @@ public class DiaDimensionamento extends Schedule {
 	private Curvas curvaDistribuicao;
 	private double NsMeta = 0;
 	private int tempoAceitavelNs = 0;
+	private double blocking = 0;
 	private int segundosIntervalo = 0;
 	private double TMA = 0.0;
 	private double chamadas = 0.0;
@@ -21,6 +22,11 @@ public class DiaDimensionamento extends Schedule {
 	private double NsDimensionado = 0.0;
 	private double produtividade = 0.0;
 	private int posicoesAtendimento = 0;
+	
+	/** Construtor sem parâmetros
+	 */
+	public DiaDimensionamento(){
+	}
 	
 	//-----------------------------------
 	// métodos restritos
@@ -126,8 +132,9 @@ public class DiaDimensionamento extends Schedule {
 	 * @param NsMeta the NsMeta to set
 	 */
 	public void setNsMeta(double NsMeta) {
-		if(NsMeta < 1 && NsMeta > 0)
+		if(NsMeta < 1 && NsMeta > 0) {
 			this.NsMeta = NsMeta;
+		}
 	}
 	
 	/** getSegundosIntervalo
@@ -142,6 +149,21 @@ public class DiaDimensionamento extends Schedule {
 	public void setSegundosIntervalo(int segundosIntervalo) {
 		this.segundosIntervalo = segundosIntervalo;
 	}
+	
+	/** setBlocking
+	 * @param blocking - double, o percentual a ser usado cálculo de linhas
+	 */
+	public void setBlocking( double blocking ){
+		this.blocking = blocking;
+	}
+	
+	/** getBlocking
+	 * @return blocking double - o percentual definido de bloqueio no cálculo de linhas
+	 */
+	public double getBlocking(){
+		return this.blocking;
+	}
+	
 	/** getCurvaDistribuicao
 	 * @return the curvaDistribuicao
 	 */
@@ -224,10 +246,10 @@ public class DiaDimensionamento extends Schedule {
 		
 		if( this.dia == null || this.tipoCurvaDia == null || this.tempoAceitavelNs <= 0 || 
 				( this.NsMeta <= 0.0 && this.NsMeta >= 1 ) || this.chamadas <= 0.0 || this.TMA <= 0  ||
-				this.curvaDistribuicao == null || this.getQtdeIntervalosAgentes() <= 0  || this.getSegundosIntervalo() <= 0 )
+				this.curvaDistribuicao == null || this.getQtdeIntervalosAgentes() <= 0  || this.getSegundosIntervalo() <= 0 ) {
 			
 			lOk = false;
-		
+		}
 		else {
 			
 			itCurva = this.getCurvaDistribuicao().getDadosIntervalo().iterator();
@@ -339,8 +361,9 @@ public class DiaDimensionamento extends Schedule {
 		int linha = 0;
 		
 		for ( Intervalo x : this.getIntervalos() ){
-			if (x.getDataHora().equals(horario) )
+			if (x.getDataHora().equals(horario) ) {
 				break;
+			}
 			
 			linha++;
 		}
@@ -358,9 +381,9 @@ public class DiaDimensionamento extends Schedule {
 	public GregorianCalendar getHoraPelaLinha( int linha ) {
 		GregorianCalendar horario = null;
 		
-		if (linha < this.getIntervalos().size() && linha >= 0 )
+		if (linha < this.getIntervalos().size() && linha >= 0 ){
 			horario = this.getIntervalos().get( linha ).getDataHora();
-		
+		}
 		return horario;
 	}
 }

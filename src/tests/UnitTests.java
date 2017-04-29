@@ -10,6 +10,8 @@ import org.junit.runners.Suite.SuiteClasses;
 	Test_Intervalo.class,
 	Test_IntervaloCurvas.class,
 	Test_Curvas.class,
-	Test_FileCurvas.class })
+	Test_FileCurvas.class,
+	Test_Schedule.class, 
+	Test_DiaDimensionamento.class})
 public class UnitTests {
 }
