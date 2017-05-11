@@ -169,10 +169,10 @@ public class Erlang {
 		else {
 			// caso os parâmetros não estejam preenchidos
 			noAgents  = -1;
-			this.errors.put( errorAgent, "Informações incompletas para calcular agent.");
+			this.insertError( errorAgent, "Informações incompletas para calcular agent.");
 		}
 		this.necessaryAgents = noAgents;
-		return !this.hasError();
+		return !this.hasError(errorAgent);
 	}
 	
 	/** Calcula o número de recursos considerando as informações de nível de serviço e chamadas para o intervalo
@@ -234,7 +234,7 @@ public class Erlang {
 		else {
 			// caso parâmetros não estejam preenchidos
 			this.calcSLA = 0;
-			this.errors.put( errorSLA, "Parâmetros insuficientes para calcular SLA.");
+			this.insertError( errorSLA, "Parâmetros insuficientes para calcular SLA.");
 		}
 			
 		return !this.hasError();
@@ -301,7 +301,7 @@ public class Erlang {
 		}
 		else {
 			this.nLines = -1;
-			this.errors.put(errorLines, "Parâmetros insuficientes para calcular a quantidade de linhas");
+			this.insertError(errorLines, "Parâmetros insuficientes para calcular a quantidade de linhas");
 		}
 		
 		return !this.hasError();
@@ -357,7 +357,7 @@ public class Erlang {
 			aveAnswer = secs(answerTime);
 		}
 		else {
-			this.errors.put(errorASA, "Parâmetros insuficientes para calcular o ASA.");
+			this.insertError(errorASA, "Parâmetros insuficientes para calcular o ASA.");
 		}
 		this.calcWaitingTime = aveAnswer;
 		return !this.hasError();
@@ -379,11 +379,18 @@ public class Erlang {
 		}
 		return aveAnswer;
 	}
-	/** hasError: indica se existe erro na carga ou preenchimento do objeto
+	/** hasError: indica se existe algum erro na carga ou preenchimento do objeto
 	 * @return boolean, determina se existe erro ou não.
 	 */
 	public boolean hasError(){
 		return ( !this.errors.isEmpty() );
+	}
+	/** hasError: indica se existe o erro específico na carga ou preenchimento do objeto
+	 * @param key, indica qual a chave a ser pesquisada
+	 * @return boolean, determina se existe erro ou não.
+	 */
+	public boolean hasError( int key ){
+		return ( this.errors.containsKey(key) );
 	}
 	
 	//--------------------------------------------------------
@@ -403,6 +410,7 @@ public class Erlang {
 	 */
 	public void setIntervalInSeconds( int segundos ){
 		intervalInSeconds = segundos;
+		this.productivity();
 		return;
 	}
 	/** getSecondsInterval: identifica a quantidade de segundos definida para os cálculos
@@ -531,11 +539,6 @@ public class Erlang {
 	public HashMap<Integer, String> getErrors(){
 		return this.errors;
 	}
-	/** finalize: Finaliza o objeto e limpa os dados de erros
-	 */
-	public void finalize(){
-		this.errors.clear();
-	}
 	//--------------------------------------------------------
 	//  Setters e Getters // FIM
 	//--------------------------------------------------------
@@ -638,18 +641,8 @@ public class Erlang {
 		this.intensity();
 		
 		// calculando a produtividade
-		if (this.intervalInSeconds > 0){
-			// calcula a produtividade
-			this.productivity = (this.calls * this.averageAnswerTime * this.insertedAgents / this.intervalInSeconds);
-			// limita o resultado a 100%
-			if (this.productivity > 1){
-				this.productivity = 1;
-			}
-			this.removeError(errorProductivity);
-		}
-		else {
-			this.errors.put(errorProductivity, "Parâmetros insuficientes para calcular a produtividade.");
-		}
+		this.productivity();
+		
 		// calculando os agentes necessários
 		this.agent();
 		
@@ -673,6 +666,15 @@ public class Erlang {
 			this.intensity = ( this.calls * this.averageAnswerTime / this.intervalInSeconds );
 		}
 	}
+	/** insertError - insere um erro na lista de erros da classe
+	 * @param key, recebe a chave que o erro deve ser inserido. Quando a chave já existe não insere novamente. 
+	 * @param message, mensagem para a interpretação do erro.
+	 */
+	private void insertError( int key, String message ){
+		if (!this.errors.containsKey(key)){
+			this.errors.put(key, message);
+		}
+	}
 	/** removeError - remove um erro do mapeamento dos erros
 	 * @param 	key, int - chave para a busca e remoção do erro.
 	 */
@@ -681,4 +683,27 @@ public class Erlang {
 			this.errors.remove(key);
 		}
 	}
+	/** productivity - calcula a produtividade conforme (chamadas * TMA * Agentes / segundos do intervalo).
+	 */
+	private void productivity(){
+		if (this.intervalInSeconds > 0){
+			// calcula a produtividade
+			this.productivity = ( ( this.calls * this.averageAnswerTime ) / ( this.insertedAgents * this.intervalInSeconds) );
+			// limita o resultado a 100%
+			if (this.productivity > 1){
+				this.productivity = 1;
+			}
+			this.removeError(errorProductivity);
+		}
+		else {
+			this.insertError(errorProductivity, "Parâmetros insuficientes para calcular a produtividade.");
+		}
+	}
+	
+	/** finalize: Finaliza o objeto e limpa os dados de erros.
+	 */
+	protected void finalize(){
+		this.errors.clear();
+	}
+
 }

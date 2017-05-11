@@ -134,7 +134,8 @@ public class WFMjr {
 					break;
 					
 			    case "4" :
-			    	cpathfile = "src/tests/resources/testeimport.xlsx";
+			    	//cpathfile = "src/tests/resources/testeimport.xlsx";
+			    	cpathfile = "src/tests/resources/curva_teste1.xlsx";
 					fc = new FileCurvas();
 					double diaDimeChamadas = 2348;
 					double diaDimeTMA = 450;
@@ -160,6 +161,7 @@ public class WFMjr {
 						// inclui o Nível de Serviço meta e tempo de espera aceitável
 						diaDime.setNsMeta(0.90); // 90%
 						diaDime.setTempoAceitavelNs(10);  // 10 segundos
+						diaDime.setBlocking(0.01);  // 1% de blocking
 						
 						// adiciona o dia do dimensionamento
 						diaDime.setDia(new GregorianCalendar(2015, 06, 12 )); // 12/06/2015

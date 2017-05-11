@@ -13,7 +13,6 @@ public class Test_Erlang {
 		Erlang erlang = new Erlang();
 		assertTrue("Deveria existir erros em função do load() com os parâmetros não preenchidos.", erlang.hasError());
 		assertEquals( "Deveria existir 5 erros listados na classe.", 5, erlang.getErrors().size() );
-		erlang.finalize();
 		
 		// criar instância do objeto usando todos os parâmetros
 		int intervalInSeconds = 900;

@@ -246,7 +246,7 @@ public class DiaDimensionamento extends Schedule {
 		
 		if( this.dia == null || this.tipoCurvaDia == null || this.tempoAceitavelNs <= 0 || 
 				( this.NsMeta <= 0.0 && this.NsMeta >= 1 ) || this.chamadas <= 0.0 || this.TMA <= 0  ||
-				this.curvaDistribuicao == null || this.getQtdeIntervalosAgentes() <= 0  || this.getSegundosIntervalo() <= 0 ) {
+				this.curvaDistribuicao == null || this.getQtdeIntervalosAgentes() <= 0 || this.getSegundosIntervalo() <= 0 ) {
 			
 			lOk = false;
 		}
@@ -271,6 +271,7 @@ public class DiaDimensionamento extends Schedule {
 					tempIntervalo.setNsMeta(this.getNsMeta());
 					tempIntervalo.setTempoEsperaAceitavel(this.getTempoAceitavelNs());
 					tempIntervalo.setIntervalInSeconds( this.getSegundosIntervalo() );
+					tempIntervalo.setBlockingPercentage( this.getBlocking() );
 	
 					// valores variáveis para o dia
 					tempDiaHora = new GregorianCalendar(dia.get(Calendar.YEAR), dia.get(Calendar.MONTH), dia.get(Calendar.DAY_OF_MONTH), 
@@ -285,6 +286,9 @@ public class DiaDimensionamento extends Schedule {
 					lOk = tempIntervalo.calcularAgentes();
 				}
 			}
+			// compara o tamanho das listas para não ter problemas com
+			// Curvas com tamanho diferente do indicado para a distribuição na classe
+			lOk = lOk && ( this.getIntervalos().size() == this.schedule.length );
 		}
 		
 		return lOk;
@@ -297,13 +301,15 @@ public class DiaDimensionamento extends Schedule {
 	 * @return 	inseriu	boolean, indica se a inclusão e atualização das informações aconteceu com sucesso
 	 */
 	public boolean setAgentesHorario( int nLinha, int nQtdAgentes ){
-		// chama o método da classe pai para executar a distribuição das informações no array
-		boolean inseriu = super.setAgentesHorario(nLinha, nQtdAgentes);
-		
 		int nLinhaAte = nLinha + this.getQtdeIntervalosAgentes();
 		Intervalo tempInfo;
 		
-		for( int nPos = nLinha; nPos < nLinhaAte; nPos++ ){
+		boolean inseriu = ( nLinhaAte <= this.getIntervalos().size() );
+		
+		// chama o método da classe pai para executar a distribuição das informações no array
+		inseriu = inseriu && super.setAgentesHorario(nLinha, nQtdAgentes);
+		
+		for( int nPos = nLinha; ( inseriu && nPos < nLinhaAte ); nPos++ ){
 			// identifica o objeto do intervalo
 			// e atualiza o novo valor total de agentes do intervalo
 			tempInfo = this.getIntervalos().get( nPos );

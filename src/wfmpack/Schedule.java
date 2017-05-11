@@ -8,7 +8,7 @@ public class Schedule{
 	public static int TOTAL_QTDE = 0;
 	public static int TOTAL_LINHA = 1;
 	
-	private int[][] schedule;
+	protected int[][] schedule;
 	private int[][] totalAgents = new int[2][MAX_COLUNAS];
 
 	private int qtdeIntervalosAgentes = 0;
@@ -123,7 +123,8 @@ public class Schedule{
 		int diffAgentes = 0;
 		
 		if (isActivate() && 
-				linhaAte <= this.getTotalIntervalos() ) {
+				linhaAte <= this.getTotalIntervalos() && 
+				linhaAte <= this.schedule.length ) {
 			
 			// identifica se a linha já sofreu uma atribuição anteriormente
 			colunaInserir = this.getColuna( nLinha );
