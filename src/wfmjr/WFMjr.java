@@ -174,7 +174,7 @@ public class WFMjr {
 						diaDime.setCurvaDistribuicao(fc.getCurvaEspecifica(0));
 						
 						// dispara a carga dos dados nos intervalos do dia a ser dimensionado
-						if ( diaDime.start() && diaDime.carregarIntervalos() ) {
+						if ( diaDime.start() ) {
 							
 							// linha | qtde recursos
 							// 0 = 37 agentes

@@ -205,7 +205,7 @@ public class DiaDimensionamento extends Schedule {
 	 * Total de Agentes, Nível de Serviço e Produtividade do dia
 	 * @return true/false - indica se a carga das informações aconteceu com sucesso
 	 */
-	public boolean carregarTotais(){
+	protected boolean carregarTotais(){
 		boolean lOk = true;
 		Iterator<Intervalo> infosIntervalo = this.getIntervalos().iterator();
 		Intervalo tempIntervalo;
@@ -236,7 +236,7 @@ public class DiaDimensionamento extends Schedule {
 	/** carregarIntervalos - carrega as informações dos intervalos e preenche para o dimensionamento
 	 * @return true/false - indica se a carga das informações aconteceu com sucesso
 	 */
-	public boolean carregarIntervalos(){
+	protected boolean carregarIntervalos(){
 		boolean lOk = true;
 		Iterator<IntervaloCurvas> itCurva;
 		IntervaloCurvas tempItCurvas;
@@ -355,8 +355,8 @@ public class DiaDimensionamento extends Schedule {
 		System.out.println("Volume = " + this.getChamadas());
 		System.out.println("TMA = " + this.getTMA());
 		System.out.println("Agentes = " + this.getAgentes());
-		System.out.printf( "Nível de Serviço = %.2f \n", this.getNsDimensionado() * 100 );  // NS Dime
-		System.out.printf( "Produtividade = %.2f \n", this.getProdutividade() * 100 );  // Produtividade
+		System.out.printf( "Nível de Serviço = %.3f \n", this.getNsDimensionado() * 100 );  // NS Dime
+		System.out.printf( "Produtividade = %.3f \n", this.getProdutividade() * 100 );  // Produtividade
 	}
 	/** getLinhaPelaHora
 	 *    Identifica pelo horário qual linha correspondente na lista de intervalos
@@ -391,5 +391,14 @@ public class DiaDimensionamento extends Schedule {
 			horario = this.getIntervalos().get( linha ).getDataHora();
 		}
 		return horario;
+	}
+	
+	
+	public boolean start(){
+		boolean isOk = super.start();
+		
+		isOk = isOk && this.carregarIntervalos();
+		
+		return isOk;
 	}
 }
