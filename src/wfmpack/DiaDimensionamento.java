@@ -321,6 +321,16 @@ public class DiaDimensionamento extends Schedule {
 		return inseriu;
 	}
 	
+	/** setAgentesHorario
+	 * Realiza a atribuição da quantidade x de agentes na linha/horario
+	 * @param  	datahora 	{@link GregorianCalendar}, data e hora que deve inserir a informação 
+	 * @param 	nQtdAgentes	int, quantidade de agentes a ser inserido
+	 * @return 	inseriu	boolean, indica se a inclusão e atualização das informações aconteceu com sucesso
+	 */
+	public boolean setAgentesHorario( GregorianCalendar datahora, int nQtdAgentes ){
+		return this.setAgentesHorario( this.getLinhaPelaHora(datahora), nQtdAgentes);
+	}
+	
 	/** exibir - exibe em saída básica (texto) as informações preenchidas no objeto
 	 */
 	public void exibir(){

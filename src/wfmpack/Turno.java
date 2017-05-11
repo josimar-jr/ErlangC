@@ -204,6 +204,4 @@ public class Turno{
 	public void setUsaHorarioDiferenteSemana(boolean usaHorarioDiferenteSemana) {
 		this.usaHorarioDiferenteSemana = usaHorarioDiferenteSemana;
 	}
-	
-	
 }
