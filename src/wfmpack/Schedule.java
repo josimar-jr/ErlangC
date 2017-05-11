@@ -14,7 +14,7 @@ public class Schedule{
 	private int qtdeIntervalosAgentes = 0;
 	private int totalIntervalos = 0;
 	
-	private boolean activate = false;
+	private boolean active = false;
 	private boolean l24horas = false;
 
 	/** Construtor sem parâmetros
@@ -64,7 +64,7 @@ public class Schedule{
 	 * @param QtdeIntervalosAgentes the QtdeIntervalosAgentes to set
 	 */
 	public void setQtdeIntervalosAgentes(int quantityIntervals) {
-		if (!this.isActivate()) {
+		if (!this.isActive()) {
 			this.qtdeIntervalosAgentes = quantityIntervals;
 		}
 	}
@@ -78,15 +78,15 @@ public class Schedule{
 	 * @param totalIntervalos the totalIntervalos to set
 	 */
 	public void setTotalIntervalos(int totalIntervals) {
-		if (!this.isActivate()){
+		if (!this.isActive()){
 			this.totalIntervalos = totalIntervals;
 		}
 	}
 	/** IsActivate - indica se o objeto está ativo para realizar a inclusão dos agentes
 	 * @return activate 	boolean, indica se o objeto está ativo (true) ou não (false)
 	 */
-	public boolean isActivate(){
-		return this.activate;
+	public boolean isActive(){
+		return this.active;
 	}
 	
 	/** is24Horas - indica se a distribuição irá acontecer para períodos de 24horas
@@ -101,13 +101,14 @@ public class Schedule{
 	 */
 	public boolean start(){
 		if (this.getQtdeIntervalosAgentes() > 0 &&
-				this.getTotalIntervalos() > 0 ) {
+				this.getTotalIntervalos() > 0 &&
+				this.getQtdeIntervalosAgentes() <= getTotalIntervalos() ) {
 			
-			this.activate = true;
+			this.active = true;
 			this.schedule = new int[getTotalIntervalos()][MAX_COLUNAS];
 		}
 		
-		return this.activate;
+		return this.active;
 	}
 	
 	/** setScheduleAgentes
@@ -122,7 +123,7 @@ public class Schedule{
 		int colunaInserir = 0;
 		int diffAgentes = 0;
 		
-		if (isActivate() && 
+		if (this.isActive() && 
 				linhaAte <= this.getTotalIntervalos() && 
 				linhaAte <= this.schedule.length ) {
 			
