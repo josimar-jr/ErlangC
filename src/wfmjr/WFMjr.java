@@ -34,6 +34,7 @@ public class WFMjr {
 		System.out.println("3 - Classe FileCurvas");
 		System.out.println("4 - Classe DiaDimensionamento");
 		System.out.println("Digite o número do teste desejado:");
+		System.out.println("Digite abaixo...");
 		 
 		try{
 		    BufferedReader bufferRead = new BufferedReader(new InputStreamReader(System.in));
